@@ -5,6 +5,7 @@ import * as http from 'http';
 import Controller from "./src/controllers/Controller";
 import {createConnection} from "typeorm";
 import User from "./src/Entities/User";
+import typeormMongodb from "./src/config/typeormMongodb";
 dotenv.config();
 
 
@@ -36,21 +37,29 @@ class App {
 
 
     public async initDB(): Promise<void> {
-        try {
-            const conn = await createConnection({
-                type: 'mongodb',
-                host: 'localhost',
-                port: 27017,
-                database: 'abdullahalsafwan',
-                entities: [User],
-                synchronize: true,
-                logging: true
-            });
+        // createConnection({
+        //     type: 'mongodb',
+        //     host: 'localhost',
+        //     port: 27017,
+        //     database: 'abdullahalsafwan',
+        //     entities: [User],
+        //     synchronize: true,
+        //     logging: true,
+        //     useUnifiedTopology:true
+        // }).then(connection =>{
+        //     console.log("Connected to the database successfully");
+        // }).catch(e=>{
+        //     console.log(e);
+        // });
 
+        // @ts-ignore
+        //TODO this has to be changed to save the password
+        createConnection().then(connection =>{
+            console.log("Connected to the database successfully");
+        }).catch(e=>{
+            console.log(e);
+        });
 
-        }catch (e) {
-
-        }
     }
 }
 export default App;

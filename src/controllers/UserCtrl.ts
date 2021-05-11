@@ -1,6 +1,7 @@
 import Controller, {controllerMethods,IRoute} from "./Controller";
 import {Request, Response, NextFunction} from "express";
 import * as mongoose from "mongoose";
+import User from "../Entities/User";
 
 class UserCtrl extends Controller {
     path: string = '/api/user';
@@ -12,11 +13,11 @@ class UserCtrl extends Controller {
             localMiddlewares:[]
         },
         {
-            path: '/register ',
+            path: '/register',
             method: controllerMethods.POST,
             handler: this.handleRegister,
             localMiddlewares:[]
-        }
+        },
     ];
 
     constructor() {
@@ -24,21 +25,13 @@ class UserCtrl extends Controller {
     }
 
     async handleLogin(req: Request,res:Response ,next: NextFunction) {
-        // const { email,  password } = req.body;
-        console.log(req.body)
-        const { name,password,email,joined } = req.body;
-        const newUser = new User();
-
-        try{
-            // const data = await newUser.save();
-            // this.sendSuccess(res,data,"success");
-        }catch (e){
-            // this.sendError(res,"bad");
-        }
+        console.log(req.body);
+        super.sendSuccess(res, {...req.body},"success");
     }
 
     async handleRegister(req: Request,res:Response ,next: NextFunction){
-        const tomato = mongoose.model
+        console.log(req.body);
+        super.sendError(res,"bad")
     }
 
 }

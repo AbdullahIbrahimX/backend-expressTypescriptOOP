@@ -1,14 +1,15 @@
 import App from "../app";
-import * as express from 'express';
+import express from 'express';
 import * as mongoose from 'mongoose';
 import {RequestHandler} from "express";
 import cookieParser = require("cookie-parser");
 import {initialize,session} from "passport";
-import * as morgan from "morgan";
-import * as cors from 'cors'
+import morgan from "morgan";
+import cors from 'cors'
 import UserCtrl from "../src/controllers/UserCtrl";
 import Controller from "../src/controllers/Controller";
 
+// @ts-ignore
 const PORT = parseInt(process.env.PORT) || 3000;
 const app = new App(express(),mongoose,PORT);
 
