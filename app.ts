@@ -3,6 +3,8 @@ import {Application,Request,Response,RequestHandler} from 'express';
 import {Mongoose} from "mongoose";
 import * as http from 'http';
 import Controller from "./src/controllers/Controller";
+import {createConnection} from "typeorm";
+import User from "./src/Entities/User";
 dotenv.config();
 
 
@@ -35,19 +37,19 @@ class App {
 
     public async initDB(): Promise<void> {
         try {
-            this.database.connect(process.env.MONGO_DB_URI, {
-                useNewUrlParser: true,
-                useUnifiedTopology: true,
-                useCreateIndex: true
+            const conn = await createConnection({
+                type: 'mongodb',
+                host: 'localhost',
+                port: 27017,
+                database: 'abdullahalsafwan',
+                entities: [User],
+                synchronize: true,
+                logging: true
             });
-            this.database.connection.on('connected',()=>{
-                console.log("Connected to database Successfully");
-            });
-            this.database.connection.on('error',(err)=>{
-                console.log(err);
-            });
-        } catch (e) {
-            console.log(e);
+
+
+        }catch (e) {
+
         }
     }
 }

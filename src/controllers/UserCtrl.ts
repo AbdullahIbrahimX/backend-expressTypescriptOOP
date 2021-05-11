@@ -1,5 +1,4 @@
 import Controller, {controllerMethods,IRoute} from "./Controller";
-import User from '../models/User'
 import {Request, Response, NextFunction} from "express";
 import * as mongoose from "mongoose";
 
@@ -28,7 +27,7 @@ class UserCtrl extends Controller {
         // const { email,  password } = req.body;
         console.log(req.body)
         const { name,password,email,joined } = req.body;
-        const newUser = new User({name,password,email,joined});
+        const newUser = new User();
 
         try{
             // const data = await newUser.save();
