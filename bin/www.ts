@@ -1,6 +1,5 @@
 import App from "../app";
 import express from 'express';
-import * as mongoose from 'mongoose';
 import {RequestHandler} from "express";
 import cookieParser = require("cookie-parser");
 import {initialize,session} from "passport";
@@ -11,7 +10,7 @@ import Controller from "../src/controllers/Controller";
 
 // @ts-ignore
 const PORT = parseInt(process.env.PORT) || 3000;
-const app = new App(express(),mongoose,PORT);
+const app = new App(express(),PORT);
 
 const middlewares: Array<RequestHandler> = [
     morgan("dev"),

@@ -1,7 +1,8 @@
 import Controller, {controllerMethods,IRoute} from "./Controller";
 import {Request, Response, NextFunction} from "express";
-import * as mongoose from "mongoose";
 import User from "../Entities/User";
+import {getManager} from "typeorm";
+
 
 class UserCtrl extends Controller {
     path: string = '/api/user';
@@ -30,8 +31,19 @@ class UserCtrl extends Controller {
     }
 
     async handleRegister(req: Request,res:Response ,next: NextFunction){
-        console.log(req.body);
-        super.sendError(res,"bad")
+        const {email , name , password} = req.body;
+        const user = new User();
+        user.email = email;
+        user.name = name;
+        user.password = password;
+
+        try {
+            const manager = getManager("default");
+            const response = await manager.save(user);
+            super.sendSuccess(res,response,"success");
+        }catch (e) {
+            this.sendError(res,`internal error, ${e}`);
+        }
     }
 
 }
