@@ -2,7 +2,8 @@ import App from "../app";
 import express from 'express';
 import {RequestHandler} from "express";
 import cookieParser = require("cookie-parser");
-import {initialize,session} from "passport";
+import passport, {initialize,session} from "passport";
+import passportConf from "../src/config/passportConf";
 import morgan from "morgan";
 import cors from 'cors'
 import UserCtrl from "../src/controllers/UserCtrl";
@@ -31,6 +32,7 @@ Promise.resolve()
         await app.initDB()
     }).then(()=>{
         app.useMiddleware(middlewares);
+        // passportConf(passport);
         app.loadControllers(routesController);
         app.run();
 });

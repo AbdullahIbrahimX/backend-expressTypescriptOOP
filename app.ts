@@ -26,7 +26,7 @@ class App {
     public useMiddleware(middlewareObject: Array<RequestHandler>): void{
         middlewareObject.forEach(middleware => this.app.use(middleware));
     }
-    //TODO find which type is the array
+
     public loadControllers(controllers: Array<Controller>): void{
         controllers.forEach(controller => this.app.use(controller.path, controller.setRoutes()));
     }

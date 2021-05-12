@@ -2,6 +2,8 @@ import Controller, {controllerMethods,IRoute} from "./Controller";
 import {Request, Response, NextFunction} from "express";
 import User from "../Entities/User";
 import {getManager} from "typeorm";
+import {authenticate} from "../config/passportConf";
+
 
 
 class UserCtrl extends Controller {
@@ -11,7 +13,7 @@ class UserCtrl extends Controller {
             path: '/login',
             method: controllerMethods.POST,
             handler: this.handleLogin,
-            localMiddlewares:[]
+            localMiddlewares:[authenticate]
         },
         {
             path: '/register',
@@ -32,10 +34,8 @@ class UserCtrl extends Controller {
 
     async handleRegister(req: Request,res:Response ,next: NextFunction){
         const {email , name , password} = req.body;
-        const user = new User();
-        user.email = email;
-        user.name = name;
-        user.password = password;
+        const user = new User(name,email,password);
+
 
         try {
             const manager = getManager("default");
