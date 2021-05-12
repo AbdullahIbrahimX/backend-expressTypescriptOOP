@@ -1,6 +1,6 @@
-import {Column, Entity, ObjectID, ObjectIdColumn} from "typeorm";
+import {Column, Entity, ObjectID, ObjectIdColumn, VersionColumn} from "typeorm";
 
-@Entity()
+@Entity("test")
 class User {
 
     @ObjectIdColumn()
@@ -16,7 +16,8 @@ class User {
     password!: string;
 
     @Column()
-    joinedin!: Date;
+    joinedIn: Date = new Date();
+
 }
 
 export default User;

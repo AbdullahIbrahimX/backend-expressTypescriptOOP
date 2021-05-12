@@ -39,6 +39,7 @@ class UserCtrl extends Controller {
 
         try {
             const manager = getManager("default");
+            console.log(user);
             const response = await manager.save(user);
             super.sendSuccess(res,response,"success");
         }catch (e) {
