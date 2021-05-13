@@ -3,7 +3,7 @@
   "host": "localhost",
   "port": 27017,
   "database": "abdullahalsafwan",
-  "entities": ["src/Entities/*.ts"],
+  "entities": ["src/models/*.ts"],
   "synchronize": true,
   "logging": true,
   "useUnifiedTopology":true

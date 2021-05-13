@@ -52,6 +52,7 @@ export interface IRoute {
      protected sendSuccess(res: Response, data: object, message?: string): Response {
          return res.status(200).json({
              message: message || 'success',
+             success:true,
              data: data
          });
      };
@@ -59,6 +60,7 @@ export interface IRoute {
      protected sendError(res: Response, message?: string): Response {
          return res.status(500).json({
              message: message || 'internal server error',
+             success:false,
          });
      };
 }

@@ -2,12 +2,14 @@ import App from "../app";
 import express from 'express';
 import {RequestHandler} from "express";
 import cookieParser = require("cookie-parser");
-import passport, {initialize,session} from "passport";
-import passportConf from "../src/config/passportConf";
+const passport = require('passport');
+import {initialize,session} from 'passport'
 import morgan from "morgan";
 import cors from 'cors'
 import UserCtrl from "../src/controllers/UserCtrl";
 import Controller from "../src/controllers/Controller";
+import passportConf from "../src/config/passportConf";
+import MessageCtrl from "../src/controllers/MessageCtrl";
 
 // @ts-ignore
 const PORT = parseInt(process.env.PORT) || 3000;
@@ -24,7 +26,8 @@ const middlewares: Array<RequestHandler> = [
     ]
 
 const routesController: Array<Controller> =[
-    new UserCtrl
+    new UserCtrl,
+    new MessageCtrl
     ]
 
 Promise.resolve()
@@ -32,7 +35,9 @@ Promise.resolve()
         await app.initDB()
     }).then(()=>{
         app.useMiddleware(middlewares);
-        // passportConf(passport);
+        passportConf(passport);
+        // require('../src/config/passportConf')(passport);
+    }).then(()=>{
         app.loadControllers(routesController);
         app.run();
-});
+    });
