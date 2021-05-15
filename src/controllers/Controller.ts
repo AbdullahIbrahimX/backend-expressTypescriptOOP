@@ -6,7 +6,7 @@ export enum controllerMethods {
     POST = "POST",
     PUT = "PUT",
     DELETE = "DELETE"
-};
+}
 
 export interface IRoute {
     path: string;
@@ -57,8 +57,8 @@ export interface IRoute {
          });
      };
 
-     protected sendError(res: Response, message?: string): Response {
-         return res.status(500).json({
+     protected sendError(res: Response, message?: string,errorCode?:number): Response {
+         return res.status(errorCode||500).json({
              message: message || 'internal server error',
              success:false,
          });

@@ -40,8 +40,8 @@ class User {
         this.password =await bcrypt.hash(this.password,salt);
     }
 
-    isPasswordMatch(password:string, hashedPassword:string,callback:Function){
-        bcrypt.compare(password, hashedPassword, (err: Error, success: boolean) => {
+    async isPasswordMatch(password: string, hashedPassword: string, callback: Function) {
+        await bcrypt.compare(password, hashedPassword, (err: Error, success: boolean) => {
             if (err) {
                 return callback(err);
             }

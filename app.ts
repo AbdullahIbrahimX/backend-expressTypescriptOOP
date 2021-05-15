@@ -1,8 +1,10 @@
 import * as dotenv from 'dotenv';
-import {Application,Request,Response,RequestHandler} from 'express';
+import {Application, RequestHandler} from 'express';
 import * as http from 'http';
 import Controller from "./src/controllers/Controller";
 import {createConnection} from "typeorm";
+import {Server} from "socket.io";
+import SocketIOControllers from "./src/controllers/websockets/SocketIOControllers";
 
 dotenv.config();
 
@@ -10,25 +12,49 @@ dotenv.config();
 class App {
     private app: Application;
     private readonly PORT: number;
+    private httpServer!:http.Server;
+    private websocketServer:Server;
 
 
-    constructor(app: Application, PORT: number) {
+    constructor(app: Application, PORT: number,websocketServer:Server) {
         this.app = app;
         this.PORT = PORT;
+        this.websocketServer = websocketServer;
     }
 
-    public run() : http.Server {
-        return this.app.listen(this.PORT,()=>{
-            console.log(`Application is running on port ${this.PORT}`);
+    public run() {
+        this.app.set('port',this.PORT);
+        this.httpServer = http.createServer(this.app);
+    }
+
+    public runHttp(){
+        this.websocketServer.attach(this.httpServer,{cors:{origin:'*'}});
+        this.httpServer.listen(this.PORT,()=>{
+            console.log(`Http server is running on port ${this.PORT}`)
         });
     }
 
-    public useMiddleware(middlewareObject: Array<RequestHandler>): void{
-        middlewareObject.forEach(middleware => this.app.use(middleware));
+    public loadWebsocketControllers(nameSpaceControllers:Array<SocketIOControllers>):Server{
+        nameSpaceControllers.forEach(controller => {
+            this.websocketServer
+                .of(controller.nameSpace)
+                .use((socket,next)=>{
+                    controller.setEvents(socket,next);
+                    next();
+                });
+        });
+        console.log('WebScoket are set up');
+        return this.websocketServer;
     }
 
-    public loadControllers(controllers: Array<Controller>): void{
-        controllers.forEach(controller => this.app.use(controller.path, controller.setRoutes()));
+
+
+    public useMiddleware(middlewares: Array<RequestHandler>): void{
+        middlewares.forEach(middleware => this.app.use(middleware));
+    }
+
+    public useControllers(controllers: Array<Controller>){
+        controllers.forEach(controller => this.app.use(controller.path,controller.setRoutes()))
     }
 
 

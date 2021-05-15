@@ -1,8 +1,9 @@
-import {Column, Entity, ObjectID, ObjectIdColumn, VersionColumn} from "typeorm";
+import {BaseEntity, Column, Entity, ObjectID, ObjectIdColumn} from "typeorm";
 
 
 @Entity("messages")
-class Message {
+class Message extends BaseEntity{
+
     @ObjectIdColumn()
     _id!: ObjectID;
 
@@ -22,6 +23,7 @@ class Message {
     private date: Date = new Date();
 
     constructor(email: string, message: string, name: string) {
+        super();
         this.email = email;
         this.message = message;
         this.name = name;

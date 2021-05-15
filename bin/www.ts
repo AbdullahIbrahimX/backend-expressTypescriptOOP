@@ -6,14 +6,19 @@ const passport = require('passport');
 import {initialize,session} from 'passport'
 import morgan from "morgan";
 import cors from 'cors'
-import UserCtrl from "../src/controllers/UserCtrl";
 import Controller from "../src/controllers/Controller";
 import passportConf from "../src/config/passportConf";
-import MessageCtrl from "../src/controllers/MessageCtrl";
+import {MessageCtrl} from "../src/controllers/MessageCtrl";
+import {UserCtrl} from "../src/controllers/UserCtrl";
+import {Server} from "socket.io";
+import SocketIOControllers from "../src/controllers/websockets/SocketIOControllers";
+import {testSocketCtrl} from "../src/controllers/websockets/testSocketCtrl";
+import CardCtrl from "../src/controllers/CardCtrl";
 
 // @ts-ignore
 const PORT = parseInt(process.env.PORT) || 3000;
-const app = new App(express(),PORT);
+const websocketServer = new Server;
+const app = new App(express(),PORT,websocketServer);
 
 const middlewares: Array<RequestHandler> = [
     morgan("dev"),
@@ -27,17 +32,22 @@ const middlewares: Array<RequestHandler> = [
 
 const routesController: Array<Controller> =[
     new UserCtrl,
-    new MessageCtrl
+    new MessageCtrl,
+    new CardCtrl,
     ]
+
+const websocketControllers:Array<SocketIOControllers> = [
+    new testSocketCtrl(websocketServer),
+]
 
 Promise.resolve()
     .then(async ()=>{
         await app.initDB()
-    }).then(()=>{
+    }).then(async ()=>{
         app.useMiddleware(middlewares);
         passportConf(passport);
-        // require('../src/config/passportConf')(passport);
-    }).then(()=>{
-        app.loadControllers(routesController);
+        app.useControllers(routesController);
         app.run();
+        app.loadWebsocketControllers(websocketControllers);
+        app.runHttp()
     });

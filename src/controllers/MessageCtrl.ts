@@ -2,10 +2,10 @@ import Controller, {controllerMethods, IRoute} from "./Controller";
 import {NextFunction, Request, Response} from "express";
 import secureRoute from "../config/passportSecureRoute";
 import Message from "../models/Message";
-import {getRepository} from "typeorm";
+import {getMongoRepository} from "typeorm";
 
-class MessageCtrl extends Controller{
-    path: string = '/api/messages';
+export class MessageCtrl extends Controller{
+    path: string = '/api/v1/messages';
     protected readonly routes: Array<IRoute> = [
         {
             path:'/send',
@@ -27,10 +27,10 @@ class MessageCtrl extends Controller{
         }
     ];
 
-    async createMessage(req: Request, res: Response, next: NextFunction){
+    async createMessage(req: Request, res: Response){
         const {email,message,name} = req.body;
         const newMessage = new Message(email,message,name);
-        const manager = getRepository(Message);
+        const manager = getMongoRepository(Message);
 
         try {
             const response = await manager.save(newMessage);
@@ -42,8 +42,8 @@ class MessageCtrl extends Controller{
         }
     }
 
-    async getMessages(req: Request, res: Response, next: NextFunction){
-        const manager = getRepository(Message);
+    async getMessages(req: Request, res: Response){
+        const manager = getMongoRepository(Message);
 
         try{
             const data = await manager.find()
@@ -58,5 +58,3 @@ class MessageCtrl extends Controller{
     }
 
 }
-
-export default MessageCtrl;
