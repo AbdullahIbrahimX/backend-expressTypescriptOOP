@@ -14,6 +14,7 @@ import {Server} from "socket.io";
 import SocketIOControllers from "../src/controllers/websockets/SocketIOControllers";
 import {testSocketCtrl} from "../src/controllers/websockets/testSocketCtrl";
 import CardCtrl from "../src/controllers/CardCtrl";
+import MainRoutSocketCtrl from "../src/controllers/websockets/mainRoutSocketCtrl";
 
 // @ts-ignore
 const PORT = parseInt(process.env.PORT) || 3000;
@@ -38,6 +39,7 @@ const routesController: Array<Controller> =[
 
 const websocketControllers:Array<SocketIOControllers> = [
     new testSocketCtrl(websocketServer),
+    new MainRoutSocketCtrl(websocketServer)
 ]
 
 Promise.resolve()

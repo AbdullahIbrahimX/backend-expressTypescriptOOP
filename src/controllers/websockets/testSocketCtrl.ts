@@ -27,36 +27,19 @@ export class testSocketCtrl extends SocketIOControllers{
             eventType:socketEvent.ON,
             handler:this.handleDisconnect
         },
-        {
-            name:'test2',
-            eventType:socketEvent.EMIT,
-            handler:()=>{},
-            data: this.test2Data()
-        }
-
     ];
 
-    test2Data():object{
-        console.log('done');
-        return{
-            data:{
-                test:'good'
-            }
-        }
-    }
-
     nameSpaceOnConnectHandler(socket: Socket, next: any) {
-        console.log(socket.nsp.name.toString() + '   User connected : ' + socket.id);
+        console.log(this.nameSpace + '   User connected : ' + socket.id);
     }
 
 
     handleTest(socket:Socket, next:any){
-
-        console.log('test is good');
+        console.log(this.nameSpace+'test is good');
     }
 
     handleDisconnect(socket:Socket,next:any){
-        console.log(`User Disconnected`)
+        console.log(this.nameSpace+`User Disconnected`)
     }
 
 

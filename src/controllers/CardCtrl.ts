@@ -8,16 +8,16 @@ class CardCtrl extends Controller{
     path: string = '/api/v1/cards';
     protected readonly routes: Array<IRoute> = [
         {
-            path:'/',
-            method:controllerMethods.POST,
-            handler:this.create,
-            localMiddlewares:[secureRoute]
-        },
-        {
             path:'/:path/:lang',
             method:controllerMethods.GET,
             handler:this.read,
             localMiddlewares:[]
+        },
+        {
+            path:'/',
+            method:controllerMethods.POST,
+            handler:this.create,
+            localMiddlewares:[secureRoute]
         },
         {
             path:'/:id',
@@ -57,7 +57,6 @@ class CardCtrl extends Controller{
         const path = req.params.path;
         const lang = req.params.lang;
         const query = {path, lang};
-
         const manager = getMongoRepository(Card)
         try {
             const data = await manager.find({where: query});

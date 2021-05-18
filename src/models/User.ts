@@ -1,4 +1,5 @@
 import {
+    AfterInsert,
     BeforeInsert,
     Column,
     Entity,
@@ -18,10 +19,10 @@ class User {
     @Column()
     private name!: string;
 
-    @Column()
+    @Column({unique:true})
     private email!: string;
 
-    @Column()
+    @Column({select:false,})
     password!: string;
 
     @Column()
@@ -47,6 +48,15 @@ class User {
             }
             return callback(null, success);
         });
+    }
+
+    getUserData(){
+        return{
+            joinedIn: this.joinedIn,
+            name:this.name,
+            email:this.email,
+            _id:this._id
+        }
     }
 
 

@@ -1,9 +1,9 @@
 import Controller, {controllerMethods,IRoute} from "./Controller";
 import {Request, Response, NextFunction} from "express";
 import User from "../models/User";
-import {getMongoRepository} from "typeorm";
-import {Error} from "mongoose";
+import { getRepository} from "typeorm";
 import * as jwt from 'jsonwebtoken';
+import secureRoute from "../config/passportSecureRoute";
 
 
 export class UserCtrl extends Controller {
@@ -19,14 +19,15 @@ export class UserCtrl extends Controller {
             path: '/register',
             method: controllerMethods.POST,
             handler: this.handleRegister,
-            localMiddlewares:[]
+            localMiddlewares:[secureRoute]
         },
     ];
 
 
     async handleLogin(req: Request,res:Response ,next: NextFunction) {
+
         const {email,password} = req.body;
-        const manager = getMongoRepository(User);
+        const manager = getRepository(User);
         let user:User
         try{
             user = await manager.findOneOrFail({where:{email:email}});
@@ -38,10 +39,18 @@ export class UserCtrl extends Controller {
 
                     const token = jwt.sign({_id : user._id},secret,{expiresIn:expire});
                     super.sendSuccess(res,{userToken:token});
+                }else{
+                    const message = 'user email or password is wrong'
+                    super.sendError(res,message,403)
                 }
             });
         }catch (e) {
-            super.sendError(res, e);
+            if (e.name === 'EntityNotFound'){
+                const message = 'user email or password is wrong'
+                super.sendError(res,message,403)
+            }else{
+                super.sendError(res, e);
+            }
         }
     }
 
@@ -51,13 +60,15 @@ export class UserCtrl extends Controller {
 
 
         try {
-            const manager = getMongoRepository(User);
-            const response:object = await manager.save(user);
-
-
-            super.sendSuccess(res,response,"success");
+            const manager = getRepository(User);
+            const response:User = await manager.save(user);
+            if (response){
+                super.sendSuccess(res,response.getUserData(),"success");
+            }else{
+                super.sendError(res,`Internal error`);
+            }
         }catch (e) {
-            this.sendError(res,`internal error, ${e}`);
+            super.sendError(res,`Internal error: , ${e}`);
         }
     }
 

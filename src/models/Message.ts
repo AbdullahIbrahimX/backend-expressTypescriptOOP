@@ -1,7 +1,7 @@
 import {BaseEntity, Column, Entity, ObjectID, ObjectIdColumn} from "typeorm";
 
 
-@Entity("messages")
+@Entity("messagestest")
 class Message extends BaseEntity{
 
     @ObjectIdColumn()

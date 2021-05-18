@@ -8,7 +8,7 @@ export interface IContent {
     level?:number;
 }
 
-@Entity('cardstest')
+@Entity('cards')
 export class Card {
     @ObjectIdColumn()
     _id!: ObjectID;
@@ -19,14 +19,13 @@ export class Card {
     @Column()
     index:number;
     @Column()
-    @Index()
     title:string;
     @Column()
     type:string;
     @Column()
     createdAt:Date = new Date();
     @Column()
-    content:Array<IContent>;
+    content:Array<object>;
 
     constructor(path: string, lang: string, index: number, title: string, type: string, content: Array<IContent>) {
         this.path = path;
