@@ -1,9 +1,8 @@
-import Controller, {controllerMethods,IRoute} from "./Controller";
-import {Request, Response, NextFunction} from "express";
+import Controller, {controllerMethods, IRoute} from "./Controller";
+import {NextFunction, Request, Response} from "express";
 import User from "../models/User";
-import { getRepository} from "typeorm";
+import {getRepository} from "typeorm";
 import * as jwt from 'jsonwebtoken';
-import secureRoute from "../config/passportSecureRoute";
 
 
 export class UserCtrl extends Controller {
@@ -19,9 +18,17 @@ export class UserCtrl extends Controller {
             path: '/register',
             method: controllerMethods.POST,
             handler: this.handleRegister,
-            localMiddlewares:[secureRoute]
+            localMiddlewares:[]
         },
+        {
+            path: '/test',
+            method: controllerMethods.POST,
+            handler: this.handleUserUpdate,
+            localMiddlewares:[]
+        },
+
     ];
+
 
 
     async handleLogin(req: Request,res:Response ,next: NextFunction) {
@@ -32,7 +39,7 @@ export class UserCtrl extends Controller {
         try{
             user = await manager.findOneOrFail({where:{email:email}});
 
-            await user.isPasswordMatch(password,user.password,(error:Error,match:boolean)=>{
+            await user.isPasswordMatch(password,(error:Error,match:boolean)=>{
                 if(match){
                     const secret:string = process.env.JWT_SECRET || '';
                     const expire = process.env.JWT_EXPIRATION;
@@ -70,6 +77,22 @@ export class UserCtrl extends Controller {
         }catch (e) {
             super.sendError(res,`Internal error: , ${e}`);
         }
+    }
+
+    async handleUserUpdate(req: Request,res:Response ,next: NextFunction){
+        const {_id, email , password, name} = req.body
+        const manager = getRepository(User);
+
+        try{
+            const user:User = await manager.findOneOrFail({where:_id});
+            user.updateUserData(name,email,password);
+            await manager.save(user);
+
+            super.sendSuccess(res,user);
+        }catch (e) {
+            super.sendError(res)
+        }
+
     }
 
 }

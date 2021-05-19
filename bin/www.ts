@@ -15,6 +15,7 @@ import SocketIOControllers from "../src/controllers/websockets/SocketIOControlle
 import {testSocketCtrl} from "../src/controllers/websockets/testSocketCtrl";
 import CardCtrl from "../src/controllers/CardCtrl";
 import MainRoutSocketCtrl from "../src/controllers/websockets/mainRoutSocketCtrl";
+import 'reflect-metadata'
 
 // @ts-ignore
 const PORT = parseInt(process.env.PORT) || 3000;
