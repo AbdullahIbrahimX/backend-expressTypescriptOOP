@@ -35,7 +35,8 @@ export class testSocketCtrl extends SocketIOControllers{
 
 
     handleTest(socket:Socket, next:any){
-        console.log(this.nameSpace+'test is good');
+        console.log('test is good');
+        console.log(socket)
     }
 
     handleDisconnect(socket:Socket,next:any){

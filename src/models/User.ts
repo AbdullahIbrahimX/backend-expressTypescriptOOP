@@ -1,68 +1,56 @@
-import {
-    BaseEntity,
-    BeforeInsert, BeforeUpdate,
-    Column,
-    Entity,
-    ObjectID,
-    ObjectIdColumn,
-} from "typeorm";
+import {BaseEntity, BeforeInsert, Column, Entity, ObjectID, ObjectIdColumn} from "typeorm";
 import bcrypt from 'bcrypt';
-import {IsDate, IsEmail, IsString, Min} from "class-validator";
+import {IsDate, IsEmail, IsString, MinLength} from "class-validator";
+import bcryptHash from "../config/bcryptHash";
+import {Error} from "mongoose";
 
-@Entity("usersTest")
+@Entity("users")
 export default class User extends BaseEntity{
-
     @ObjectIdColumn()
     _id!: ObjectID;
 
     @Column()
-    private name: string;
+    name!: string;
 
-    @Column()
+    @Column({unique:true})
     @IsEmail()
-    private email: string;
+    email!: string;
 
     @Column({select:false})
     @IsString()
-    @Min(8)
-    private password!: string;
+    @MinLength(8)
+    password!: string;
 
     @Column()
     @IsDate()
-    private readonly joinedIn: Date = new Date();
-
-
-    constructor( name: string, email: string, password: string) {
-        super();
-        this.name = name;
-        this.email = email;
-        this.password = password;
-    }
-
+    joinedIn: Date = new Date();
 
     //-------- rules --------//
 
     @BeforeInsert()
     async encryptPassword() {
-        const salt =await bcrypt.genSalt(10);
-        this.password =await bcrypt.hash(this.password,salt);
+        this.password = await bcryptHash(this.password, 10);
     }
 
     //-------- Services --------//
-    async isPasswordMatch(password: string, callback: Function) {
+    async isPasswordMatch(password: string, callback: (error?:Error,match?:boolean)=>void){
         await bcrypt.compare(password, this.password, (err: Error, success: boolean) => {
             if (err) {
-                return callback(err);
+                callback(err,undefined);
             }
-            return callback(null, success);
+            callback(undefined,success);
         });
     }
 
-    updateUserData(name?: string, email?: string, password?: string){
-        password? this.password = password: null;
-        name? this.name = name: null;
-        email? this.email = email : null;
+
+    async updateUserData(name?: string, email?: string, password?: string) {
+        name ? this.name = name : null;
+        email ? this.email = email : null;
+        if (password) {
+            this.password = await bcryptHash(password, 10);
+        }
     }
+
 
     getUserData(){
         return{

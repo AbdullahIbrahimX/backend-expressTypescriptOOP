@@ -17,7 +17,7 @@ export class MessageCtrl extends Controller{
             path:'/get',
             method: controllerMethods.GET,
             handler:this.getMessages,
-            localMiddlewares:[secureRoute]
+            localMiddlewares:[]
         },
         {
             path:'/delete',
@@ -29,7 +29,10 @@ export class MessageCtrl extends Controller{
 
     async createMessage(req: Request, res: Response){
         const {email,message,name} = req.body;
-        const newMessage = new Message(email,message,name);
+        const newMessage = new Message();
+        newMessage.email =email;
+        newMessage.name = name;
+        newMessage.message = message;
         const manager = getMongoRepository(Message);
 
         try {

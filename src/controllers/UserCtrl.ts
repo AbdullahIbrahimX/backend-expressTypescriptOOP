@@ -3,6 +3,7 @@ import {NextFunction, Request, Response} from "express";
 import User from "../models/User";
 import {getRepository} from "typeorm";
 import * as jwt from 'jsonwebtoken';
+import {validateOrReject} from "class-validator";
 
 
 export class UserCtrl extends Controller {
@@ -21,8 +22,8 @@ export class UserCtrl extends Controller {
             localMiddlewares:[]
         },
         {
-            path: '/test',
-            method: controllerMethods.POST,
+            path: '/updateUser',
+            method: controllerMethods.PUT,
             handler: this.handleUserUpdate,
             localMiddlewares:[]
         },
@@ -35,20 +36,23 @@ export class UserCtrl extends Controller {
 
         const {email,password} = req.body;
         const manager = getRepository(User);
-        let user:User
         try{
-            user = await manager.findOneOrFail({where:{email:email}});
+            const user = await manager.findOneOrFail({where:{email:email}});
 
-            await user.isPasswordMatch(password,(error:Error,match:boolean)=>{
-                if(match){
-                    const secret:string = process.env.JWT_SECRET || '';
-                    const expire = process.env.JWT_EXPIRATION;
+            await user.isPasswordMatch(password,(error?:Error,match?:boolean)=>{
+                if (!error) {
+                    if(match){
+                        const secret:string = process.env.JWT_SECRET || '';
+                        const expire = process.env.JWT_EXPIRATION;
 
-                    const token = jwt.sign({_id : user._id},secret,{expiresIn:expire});
-                    super.sendSuccess(res,{userToken:token});
+                        const token = jwt.sign({_id : user._id},secret,{expiresIn:expire});
+                        super.sendSuccess(res,{userToken:token});
+                    }else{
+                        const message = 'user email or password is wrong'
+                        super.sendError(res,message,403)
+                    }
                 }else{
-                    const message = 'user email or password is wrong'
-                    super.sendError(res,message,403)
+                    this.sendError(res,`INTERNAL ERROR: ${error}`,500);
                 }
             });
         }catch (e) {
@@ -63,10 +67,13 @@ export class UserCtrl extends Controller {
 
     async handleRegister(req: Request,res:Response ,next: NextFunction){
         const {email , name , password} = req.body;
-        const user = new User(name,email,password);
-
+        const user = new User();
+        user.email =email;
+        user.name = name;
+        user.password = password;
 
         try {
+            await validateOrReject(user)
             const manager = getRepository(User);
             const response:User = await manager.save(user);
             if (response){
@@ -85,10 +92,10 @@ export class UserCtrl extends Controller {
 
         try{
             const user:User = await manager.findOneOrFail({where:_id});
-            user.updateUserData(name,email,password);
+            await user.updateUserData(name,email,password);
             await manager.save(user);
 
-            super.sendSuccess(res,user);
+            super.sendSuccess(res,user.getUserData());
         }catch (e) {
             super.sendError(res)
         }

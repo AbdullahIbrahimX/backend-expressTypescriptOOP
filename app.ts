@@ -10,10 +10,10 @@ dotenv.config();
 
 
 class App {
-    private app: Application;
+    private readonly app: Application;
     private readonly PORT: number;
     private httpServer!:http.Server;
-    private websocketServer:Server;
+    private readonly websocketServer:Server;
 
 
     constructor(app: Application, PORT: number,websocketServer:Server) {
@@ -28,7 +28,7 @@ class App {
     }
 
     public runHttp(){
-        this.websocketServer.attach(this.httpServer,{cors:{origin:'*'}});
+        this.websocketServer.attach(this.httpServer,{cors:{origin:'*'},allowEIO3:true});
         this.httpServer.listen(this.PORT,()=>{
             console.log(`Http server is running on port ${this.PORT}`)
         });
@@ -61,7 +61,7 @@ class App {
     public async initDB(): Promise<void> {
         createConnection().then(connection =>{
             console.log("Connected to the database successfully");
-        }).catch(e=>{
+         }).catch(e=>{
             console.log(e);
         });
 

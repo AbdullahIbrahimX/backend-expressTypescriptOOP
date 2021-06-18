@@ -1,0 +1,11 @@
+{
+  "type": "mongodb",
+  "url": "mongodb+srv://AbdullahIbrahim:TSALUMndAPmByhsW@cluster0.yyhts.mongodb.net/AbdullahIbrahim?retryWrites=true&w=majority",
+  "entities": ["src/models.ts"],
+  "synchronize": true,
+  "logging": true,
+  "useUnifiedTopology":true,
+  "useNewUrlParser": true
+}
+
+

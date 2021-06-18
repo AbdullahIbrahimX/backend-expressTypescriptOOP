@@ -13,9 +13,10 @@ import {UserCtrl} from "../src/controllers/UserCtrl";
 import {Server} from "socket.io";
 import SocketIOControllers from "../src/controllers/websockets/SocketIOControllers";
 import {testSocketCtrl} from "../src/controllers/websockets/testSocketCtrl";
-import CardCtrl from "../src/controllers/CardCtrl";
 import MainRoutSocketCtrl from "../src/controllers/websockets/mainRoutSocketCtrl";
 import 'reflect-metadata'
+import PageCtrl from "../src/controllers/PageCtrl";
+import ContentCtrl from "../src/controllers/ContentCtrl";
 
 // @ts-ignore
 const PORT = parseInt(process.env.PORT) || 3000;
@@ -35,7 +36,8 @@ const middlewares: Array<RequestHandler> = [
 const routesController: Array<Controller> =[
     new UserCtrl,
     new MessageCtrl,
-    new CardCtrl,
+    new PageCtrl,
+    new ContentCtrl
     ]
 
 const websocketControllers:Array<SocketIOControllers> = [

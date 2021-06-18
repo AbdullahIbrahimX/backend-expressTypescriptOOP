@@ -1,10 +1,10 @@
 {
-  "type": "mongodb",
-  "host": "localhost",
-  "port": 27017,
-  "database": "abdullahalsafwan",
-  "entities": ["src/models/*.ts"],
-  "synchronize": true,
-  "logging": true,
-  "useUnifiedTopology":true
+    "type": "mongodb",
+    "host": "localhost",
+    "port": 27017,
+    "database": "AbdullahIbrahim",
+    "entities": ["src/models/*.ts"],
+    "synchronize": true,
+    "logging": true,
+    "useUnifiedTopology":true
 }
