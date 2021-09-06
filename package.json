@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.ts",
   "scripts": {
-    "dev": "nodemon --exec ts-node ./bin/www.ts",
+    "dev": "nodemon --exec npx ts-node ./bin/www.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Abdullah Ibrahim",
@@ -37,13 +37,14 @@
     "@types/express": "^4.17.11",
     "@types/mongoose": "^5.10.5",
     "@types/morgan": "^1.9.2",
-    "@types/node": "^15.0.2",
+    "@types/node": "^15.12.5",
     "@types/passport": "^1.0.6",
     "@types/passport-jwt": "^3.0.5",
     "@types/socket.io": "^2.1.13",
     "@types/uuid": "^8.3.0",
     "nodemon": "^2.0.7",
     "ts-node": "^9.1.1",
+    "tslib": "^2.3.0",
     "typescript": "^4.2.4"
   }
 }

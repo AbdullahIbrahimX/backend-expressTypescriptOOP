@@ -3,7 +3,7 @@ import {Application, RequestHandler} from 'express';
 import * as http from 'http';
 import Controller from "./src/controllers/Controller";
 import {createConnection} from "typeorm";
-import {Server} from "socket.io";
+import {Server, Socket} from "socket.io";
 import SocketIOControllers from "./src/controllers/websockets/SocketIOControllers";
 
 dotenv.config();
@@ -34,8 +34,12 @@ class App {
         });
     }
 
-    public loadWebsocketControllers(nameSpaceControllers:Array<SocketIOControllers>):Server{
+    public loadWebsocketControllers(nameSpaceControllers:Array<SocketIOControllers>,middlewares: Array<RequestHandler>):Server{
+        const wrapper = (middleware:any) => (socket: Socket, next: any) => middleware(socket.request, {}, next);
         nameSpaceControllers.forEach(controller => {
+            middlewares.forEach(middleware =>{
+                this.websocketServer.of(controller.nameSpace).use(wrapper(middleware));
+            });
             this.websocketServer
                 .of(controller.nameSpace)
                 .use((socket,next)=>{

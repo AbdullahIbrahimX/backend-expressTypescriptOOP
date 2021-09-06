@@ -16,29 +16,25 @@ export interface IRoute {
 }
 
 
- abstract class Controller {
+abstract class Controller {
     public router : Router = Router();
     public abstract path: string;
     protected abstract readonly routes: Array<IRoute> = [];
 
     public setRoutes = (): Router => {
         for ( const route of this.routes ){
-            for ( const localMiddleWare of route.localMiddlewares ) {
-                this.router.use(route.path, localMiddleWare);
-            }
-
             switch (route.method) {
                 case controllerMethods.GET:
-                    this.router.get(route.path,route.handler);
+                    this.router.get(route.path,...route.localMiddlewares,route.handler);
                     break;
                 case controllerMethods.POST:
-                    this.router.post(route.path,route.handler);
+                    this.router.post(route.path,...route.localMiddlewares,route.handler);
                     break;
                 case controllerMethods.PUT:
-                    this.router.put(route.path,route.handler);
+                    this.router.put(route.path,...route.localMiddlewares,route.handler);
                     break;
                 case controllerMethods.DELETE:
-                    this.router.delete(route.path,route.handler);
+                    this.router.delete(route.path,...route.localMiddlewares,route.handler);
                     break;
                 default:
                     console.log("not a valid method");
@@ -48,20 +44,20 @@ export interface IRoute {
         return this.router;
     }
 
-     // these methods below must not be a properties< but methods (no "=>")
-     protected sendSuccess(res: Response, data: object, message?: string): Response {
-         return res.status(200).json({
-             message: message || 'success',
-             success:true,
-             data: data
-         });
-     };
+    // these methods below must not be a properties< but methods (no "=>")
+    protected sendSuccess(res: Response, data: object, message?: string): Response {
+        return res.status(200).json({
+            message: message || 'success',
+            success:true,
+            data: data
+        });
+    };
 
-     protected sendError(res: Response, message?: string,errorCode?:number): Response {
-         return res.status(errorCode||500).json({
-             message: message || 'internal server error',
-             success:false,
-         });
-     };
+    protected sendError(res: Response, message?: string,errorCode?:number): Response {
+        return res.status(errorCode||500).json({
+            message: message || 'internal server error',
+            success:false,
+        });
+    };
 }
 export default Controller;

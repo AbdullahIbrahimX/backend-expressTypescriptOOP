@@ -35,6 +35,29 @@ class ContentCtrl extends Controller{
         },
     ];
 
+    /**
+     {
+    "pageID":"60cbf43b81567f0314a0fe2d",
+    "content" : [
+        {
+            "title": "test content",
+            "institution_name": null,
+            "start_date": null,
+            "end_date": null,
+            "icon": "js",
+            "level": 92
+        },
+        {
+            "title": "test content",
+            "institution_name": null,
+            "start_date": null,
+            "end_date": null,
+            "icon": "js",
+            "level": 92
+        }
+    ]
+     }
+     **/
     async createContent(req: Request, res:Response , next: NextFunction){
         let pageId:string = req.body.pageID;
         let contents:ContentType[] = req.body.content;
@@ -68,6 +91,11 @@ class ContentCtrl extends Controller{
         }
     }
 
+    /**
+     {
+    "pageID":"60cbf43b81567f0314a0fe2d"
+     }
+     **/
     async readContent(req: Request, res:Response , next: NextFunction){
         const {pageID} = req.body;
         const manager = getMongoRepository(Page);
@@ -80,6 +108,20 @@ class ContentCtrl extends Controller{
         }
     }
 
+    /**
+     {
+    "pageID":"60cbf43b81567f0314a0fe2d",
+    "contentID":"50e6f278-f4dd-4019-beea-45fbe964df14",
+    "newContent":{
+        "title": "test content",
+        "institution_name": null,
+        "start_date": null,
+        "end_date": null,
+        "icon": "js",
+        "level": 92
+    }
+     }
+     **/
     async updateContent(req: Request, res:Response , next: NextFunction){
         const {pageID,contentID} = req.body;
         const newContentData:ContentType = req.body.newContent;
@@ -106,6 +148,12 @@ class ContentCtrl extends Controller{
         }
     }
 
+    /**
+     {
+    "pageID":"60cbf43b81567f0314a0fe2d",
+    "contentID":"50e6f278-f4dd-4019-beea-45fbe964df14"
+     }
+     * **/
     async deleteContent(req: Request, res:Response , next: NextFunction){
         const {pageID,contentID} = req.body;
         const manager = getMongoRepository(Page);

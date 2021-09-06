@@ -1,6 +1,6 @@
 import Controller, {controllerMethods, IRoute} from "./Controller";
 import {NextFunction, Request, Response} from "express";
-import secureRoute from "../config/passportSecureRoute";
+import {secureRoute} from "../config/passportSecureRoute";
 import Message from "../models/Message";
 import {getMongoRepository} from "typeorm";
 
@@ -17,7 +17,7 @@ export class MessageCtrl extends Controller{
             path:'/get',
             method: controllerMethods.GET,
             handler:this.getMessages,
-            localMiddlewares:[]
+            localMiddlewares:[secureRoute]
         },
         {
             path:'/delete',

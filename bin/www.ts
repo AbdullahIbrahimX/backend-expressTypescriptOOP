@@ -18,8 +18,8 @@ import 'reflect-metadata'
 import PageCtrl from "../src/controllers/PageCtrl";
 import ContentCtrl from "../src/controllers/ContentCtrl";
 
-// @ts-ignore
-const PORT = parseInt(process.env.PORT) || 3000;
+
+const PORT = parseInt(process.env["PORT"]!) || 3000;
 const websocketServer = new Server;
 const app = new App(express(),PORT,websocketServer);
 
@@ -31,19 +31,30 @@ const middlewares: Array<RequestHandler> = [
     cookieParser(),
     initialize(),
     session(),
-    ]
+    ];
+
 
 const routesController: Array<Controller> =[
     new UserCtrl,
     new MessageCtrl,
     new PageCtrl,
     new ContentCtrl
-    ]
+    ];
+
+
+const websocketMiddlewares:Array<RequestHandler>=[
+    morgan("dev"),
+    initialize(),
+    session(),
+    ];
+
 
 const websocketControllers:Array<SocketIOControllers> = [
     new testSocketCtrl(websocketServer),
     new MainRoutSocketCtrl(websocketServer)
-]
+    ];
+
+
 
 Promise.resolve()
     .then(async ()=>{
@@ -53,6 +64,6 @@ Promise.resolve()
         passportConf(passport);
         app.useControllers(routesController);
         app.run();
-        app.loadWebsocketControllers(websocketControllers);
+        app.loadWebsocketControllers(websocketControllers,websocketMiddlewares);
         app.runHttp()
     });

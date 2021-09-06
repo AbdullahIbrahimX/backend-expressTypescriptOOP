@@ -1,7 +1,7 @@
 import {BaseEntity, Column, Entity, ObjectID, ObjectIdColumn, OneToMany} from "typeorm";
 import Content from "./Content";
 
-enum types {
+export enum pageTypes {
     skill="skill",
     experience="experience",
     education="education"
@@ -14,10 +14,12 @@ enum languages {
 
 export interface PageType{
     title?:string;
-    type?:types;
+    type?:pageTypes;
     index?:number;
     language?:languages;
 }
+
+
 @Entity('pages')
 class Page extends BaseEntity{
     @ObjectIdColumn()
@@ -27,7 +29,7 @@ class Page extends BaseEntity{
     title?:string;
 
     @Column()
-    type?:types;
+    type?:pageTypes;
 
     @Column()
     index?:number;
